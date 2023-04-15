@@ -1,96 +1,69 @@
 #include <stdio.h>
 #include <stdlib.h>
-#define PUSH_SUCCESS 1
-#define PUSH_FAILURE -1
-#define POP_SUCCESS 2
-#define POP_FAILURE -2
-
-int peek(int stack[], int *top, int *data)
+#define QUEUE_SIZE 5
+// メモ : リングバッファとは
+// リングバッファは、配列の先頭と末尾をつなげたような構造で、末尾の次は先頭に戻るようにしている。
+// これにより、配列の先頭と末尾を使い回すことができる。
+typedef struct
 {
-  if (*top > 0)
-  {
-    *data = stack[(*top) - 1];
-    return POP_SUCCESS;
-  }
-  else
-  {
-    return POP_FAILURE;
-  }
+  int *buf;
+  int head;
+  int tail;
+  int size;
+} Queue;
+
+void init_queue(Queue *q)
+{
+  q->buf = (int *)malloc(sizeof(int) * QUEUE_SIZE);
+  q->head = q->tail = q->size = 0;
 }
 
-void stack_init(int *top)
+void enqueue(Queue *q, int data)
 {
-  *top = 0;
+  if (q->size == QUEUE_SIZE)
+  {
+    printf("queue is full");
+    return;
+  }
+  q->buf[q->tail] = data;
+  q->tail = (q->tail + 1) % QUEUE_SIZE;
+  q->size++;
 }
 
-void display(int stack[], int top)
+int dequeue(Queue *q)
 {
-  int i;
-  printf("STACK (%d) : ", top);
-  for (i = 0; i < top; i++)
+  if (q->size == 0)
   {
-    printf("%d ", stack[i]);
+    printf("queue is empty");
+    return -1;
+  }
+  int data = q->buf[q->head];
+  q->head = (q->head + 1) % QUEUE_SIZE;
+  q->size--;
+  return data;
+}
+
+int main()
+{
+  Queue q;
+  init_queue(&q);
+
+  enqueue(&q, 100);
+  enqueue(&q, 200);
+  enqueue(&q, 300);
+
+  printf("%d\n", dequeue(&q));
+
+  dequeue(&q);
+
+  enqueue(&q, 400);
+  while (q.size > 0)
+  {
+    printf("%d ", dequeue(&q));
   }
   printf("\n");
-}
 
-int push(int stack[], int *top, int data)
-{
-  if (*top >= MAX)
-  {
-    // stack overflow
-    return PUSH_FAILURE;
-  }
-  else
-  {
-    stack[*top] = data;
-    (*top)++;
-    return PUSH_SUCCESS;
-  }
-}
-
-int pop(int stack[], int *top, int *data)
-{
-  if (*top > 0)
-  {
-    *data = stack[(*top) - 1];
-    (*top)--;
-    return POP_SUCCESS;
-  }
-  else
-  {
-    // empty stack
-    return POP_FAILURE;
-  }
-}
-
-int main(void)
-{
-  int stack[MAX];
-  int top, data;
-
-  stack_init(&top);
-  data = 300;
-  printf("push: %d\n", data);
-  push(stack, &top, data);
-  data = 400;
-  printf("push: %d\n", data);
-  push(stack, &top, data);
-  data = 500;
-  printf("push: %d\n", data);
-  push(stack, &top, data);
-
-  // peek(stack, &top, &data);
-  // printf("peek: %d\n", data);
-
-  display(stack, top);
-
-  pop(stack, &top, &data);
-  printf("pop: %d\n", data);
-  pop(stack, &top, &data);
-  printf("pop: %d\n", data);
-  pop(stack, &top, &data);
-  printf("pop: %d\n", data);
+  free(q.buf);
 
   return 0;
 }
