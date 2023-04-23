@@ -21,7 +21,7 @@ void print_linked_list(NODE_TYPE *node)
 void remove_first_node(NODE_TYPE **head)
 {
   NODE_TYPE *tmp;
-  if (head == NULL | *head == NULL)
+  if (head == NULL || *head == NULL)
   {
     return;
   }
@@ -31,13 +31,41 @@ void remove_first_node(NODE_TYPE **head)
   free(tmp);
 }
 
+void remove_last_node(NODE_TYPE **head)
+{
+  NODE_TYPE *tmp = *head;
+  NODE_TYPE *previous;
+
+  if (head == NULL || *head == NULL)
+  {
+    printf("The list is empty. Nothing to delete.");
+    return;
+  }
+
+  if (tmp->next == NULL)
+  {
+    printf("The last node was deleted.: %d \n", tmp->data);
+    *head = NULL;
+    free(tmp);
+    return;
+  }
+
+  while (tmp->next != NULL)
+  {
+    previous = tmp;
+    tmp = tmp->next;
+  }
+  previous->next = NULL;
+  printf("The last node deleted.: %d \n", tmp->data);
+  free(tmp);
+}
+
 void prepend_linked_list(NODE_TYPE **head, int data)
 {
   NODE_TYPE *new_node;
   new_node = malloc(sizeof(NODE_TYPE));
   new_node->data = data;
   if (*head == NULL)
-
   {
     new_node->next = NULL;
     *head = new_node;
@@ -58,17 +86,26 @@ int main()
 
   for (i = 0; i < DATA_SIZE; i++)
   {
-    printf("i is %d \n", i);
-
     data = (int)rand() % 100;
     printf("prepending %d \n", data);
     prepend_linked_list(&head, data);
   }
   print_linked_list(head);
   remove_first_node(&head);
-  remove_first_node(&head);
+  print_linked_list(head);
   remove_first_node(&head);
   print_linked_list(head);
+  remove_first_node(&head);
+  print_linked_list(head);
+
+  remove_last_node(&head);
+  print_linked_list(head);
+  // remove_last_node(&head);
+  // print_linked_list(head);
+  // remove_last_node(&head);
+  // print_linked_list(head);
+  // remove_last_node(&head);
+  // print_linked_list(head);
 
   return 0;
 }
