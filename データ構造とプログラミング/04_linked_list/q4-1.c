@@ -103,6 +103,38 @@ void prepend_linked_list(NODE_TYPE **head, int data)
   }
 }
 
+NODE_TYPE *find_last_node(NODE_TYPE **head)
+{
+  NODE_TYPE *tmp = *head;
+  while (tmp->next != NULL)
+  {
+    tmp = tmp->next;
+  }
+  return tmp;
+}
+
+void append_linked_list(NODE_TYPE **head, int data)
+{
+  NODE_TYPE *new_node;
+  NODE_TYPE *last_node;
+
+  // 新しいノードを作成してメモリを確保する
+  new_node = malloc(sizeof(NODE_TYPE));
+  new_node->data = data;
+  new_node->next = NULL;
+
+  // リストが空なら先頭をnew_nodeにする
+  if (*head == NULL)
+  {
+    *head = new_node;
+    return;
+  }
+
+  // リスト内の最後のノードのポインタを新しいノードに向ける
+  last_node = find_last_node(head);
+  last_node->next = new_node;
+}
+
 int length(NODE_TYPE **head)
 {
   NODE_TYPE *tmp = *head;
@@ -134,5 +166,7 @@ int main()
   print_linked_list(head);
   printf("This linked list's length is %d\n", length(&head));
 
+  append_linked_list(&head, 1000);
+  print_linked_list(head);
   return 0;
 }
