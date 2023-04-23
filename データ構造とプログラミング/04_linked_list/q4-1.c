@@ -12,9 +12,23 @@ void print_linked_list(NODE_TYPE *node)
 {
   while (node != NULL)
   {
-    printf("%d\n", node->data);
+    printf("%d ", node->data);
     node = node->next;
   }
+  printf("\n");
+}
+
+void remove_first_node(NODE_TYPE **head)
+{
+  NODE_TYPE *tmp;
+  if (head == NULL | *head == NULL)
+  {
+    return;
+  }
+  tmp = *head;
+  *head = (*head)->next;
+
+  free(tmp);
 }
 
 void prepend_linked_list(NODE_TYPE **head, int data)
@@ -23,6 +37,7 @@ void prepend_linked_list(NODE_TYPE **head, int data)
   new_node = malloc(sizeof(NODE_TYPE));
   new_node->data = data;
   if (*head == NULL)
+
   {
     new_node->next = NULL;
     *head = new_node;
@@ -50,5 +65,10 @@ int main()
     prepend_linked_list(&head, data);
   }
   print_linked_list(head);
+  remove_first_node(&head);
+  remove_first_node(&head);
+  remove_first_node(&head);
+  print_linked_list(head);
+
   return 0;
 }
