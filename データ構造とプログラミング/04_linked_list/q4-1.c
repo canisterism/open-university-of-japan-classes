@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #define DATA_SIZE 6
+#define NOT_FOUND -1
 
 typedef struct node
 {
@@ -29,6 +30,31 @@ void remove_first_node(NODE_TYPE **head)
   *head = (*head)->next;
 
   free(tmp);
+}
+
+int find_node(NODE_TYPE **head, int data)
+{
+  NODE_TYPE *tmp = *head;
+
+  // 長さ0ならスキップ
+  if (tmp->next == NULL)
+  {
+    printf("The list is empty. %d is not found.\n", data);
+  }
+
+  // ノードを走査してデータを探す
+  while (tmp->next != NULL)
+  {
+    if (tmp->data == data)
+    {
+      return tmp->data;
+    }
+    tmp = tmp->next;
+  }
+
+  // データが見つからない場合
+  printf("%d is not found.\n", data);
+  return NOT_FOUND;
 }
 
 void remove_last_node(NODE_TYPE **head)
@@ -80,32 +106,16 @@ void prepend_linked_list(NODE_TYPE **head, int data)
 int main()
 {
   NODE_TYPE *head;
-  int i, data;
+  int data;
 
   head = NULL;
-
-  for (i = 0; i < DATA_SIZE; i++)
-  {
-    data = (int)rand() % 100;
-    printf("prepending %d \n", data);
-    prepend_linked_list(&head, data);
-  }
-  print_linked_list(head);
-  remove_first_node(&head);
-  print_linked_list(head);
-  remove_first_node(&head);
-  print_linked_list(head);
-  remove_first_node(&head);
+  prepend_linked_list(&head, 0);
+  prepend_linked_list(&head, 100);
+  prepend_linked_list(&head, 200);
+  prepend_linked_list(&head, 300);
   print_linked_list(head);
 
-  remove_last_node(&head);
-  print_linked_list(head);
-  // remove_last_node(&head);
-  // print_linked_list(head);
-  // remove_last_node(&head);
-  // print_linked_list(head);
-  // remove_last_node(&head);
-  // print_linked_list(head);
-
+  data = find_node(&head, 1);
+  printf("returned data is: %d", data);
   return 0;
 }
