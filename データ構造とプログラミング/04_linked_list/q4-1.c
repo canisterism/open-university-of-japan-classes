@@ -103,6 +103,18 @@ void prepend_linked_list(NODE_TYPE **head, int data)
   }
 }
 
+int length(NODE_TYPE **head)
+{
+  NODE_TYPE *tmp = *head;
+  int count = 0;
+  while (tmp != NULL)
+  {
+    count++;
+    tmp = tmp->next;
+  }
+  return count;
+}
+
 int main()
 {
   NODE_TYPE *head;
@@ -115,7 +127,12 @@ int main()
   prepend_linked_list(&head, 300);
   print_linked_list(head);
 
-  data = find_node(&head, 1);
-  printf("returned data is: %d", data);
+  printf("returned data is: %d\n", find_node(&head, 1));
+
+  remove_first_node(&head);
+
+  print_linked_list(head);
+  printf("This linked list's length is %d\n", length(&head));
+
   return 0;
 }
