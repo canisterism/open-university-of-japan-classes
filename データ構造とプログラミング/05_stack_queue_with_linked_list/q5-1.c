@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #define DATA_SIZE 6
 #define NOT_FOUND -1
+#define STACK_UNDERFLOW -2
 
 typedef struct node
 {
@@ -30,6 +31,11 @@ void push(NODE_TYPE **head, int data)
 
 int pop(NODE_TYPE **head)
 {
+  if (*head == NULL)
+  {
+    return STACK_UNDERFLOW;
+  }
+
   NODE_TYPE *tmp;
   int data;
   tmp = (*head);         // popされるノードを取り出す
