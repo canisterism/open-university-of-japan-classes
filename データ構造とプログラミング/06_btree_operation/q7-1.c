@@ -35,7 +35,7 @@ NODE_TYPE *find_tree_node(NODE_TYPE *node, int data)
     return NULL;
   }
 
-  printf("Current node's data is: %d \n", node->data);
+  printf("find_tree_node: Current node's data is: %d \n", node->data);
 
   // ほしいノードの数字が訪れたノードより小さければleft
   if (data < node->data)
@@ -89,58 +89,66 @@ void traversal_postorder(NODE_TYPE *node)
   printf("%2d ", node->data);
 }
 
+NODE_TYPE *insert_node(NODE_TYPE *node, int data)
+{
+
+  if (node == NULL)
+  {
+    node = malloc(sizeof(NODE_TYPE));
+    node->data = data;
+    node->left = NULL;
+    node->right = NULL;
+  }
+  else
+  {
+    // 挿入したいデータが現在のノード値よりも小さい時
+    if (data < node->data)
+    {
+      node->left = insert_node(node->left, data);
+    }
+    // 挿入したいデータが現在のノード値よりも大きい時
+    else if (data > node->data)
+    {
+      node->right = insert_node(node->right, data);
+    }
+  }
+  return node;
+}
+
 NODE_TYPE *build_btree()
 {
+  int data[] = {40, 30, 70, 10, 60, 90, 20, 15};
+  int i;
   NODE_TYPE *root;
-  root = malloc(sizeof(NODE_TYPE));
-  root->data = 40;
+  root = NULL;
 
-  root->left = malloc(sizeof(NODE_TYPE));
-  root->left->data = 30;
-
-  root->right = malloc(sizeof(NODE_TYPE));
-  root->right->data = 70;
-
-  root->left->left = malloc(sizeof(NODE_TYPE));
-  root->left->left->data = 10;
-  root->left->right = NULL;
-
-  root->left->left->left = NULL;
-  root->left->left->right = malloc(sizeof(NODE_TYPE));
-  root->left->left->right->data = 20;
-  root->left->left->right->left = NULL;
-  root->left->left->right->right = NULL;
-
-  root->right->left = malloc(sizeof(NODE_TYPE));
-  root->right->left->data = 60;
-  root->right->left->left = NULL;
-  root->right->left->right = NULL;
-
-  root->right->right = malloc(sizeof(NODE_TYPE));
-  root->right->right->data = 90;
-  root->right->right->left = NULL;
-  root->right->right->right = NULL;
-
+  for (i = 0; i < 8; i++)
+  {
+    root = insert_node(root, data[i]);
+  }
   return root;
 }
 
 int main()
 {
   NODE_TYPE *root;
-  NODE_TYPE *target_node;
+  int target_number;
+  NODE_TYPE *found_node;
 
   root = build_btree();
   print_btree(root, 0);
   printf("\n");
 
-  target_node = find_tree_node(root, 21);
-  if (target_node != NULL)
+  target_number = 75;
+
+  found_node = find_tree_node(root, target_number);
+  if (found_node != NULL)
   {
-    printf("%d is found!", target_node->data);
+    printf("%d is found!", found_node->data);
   }
   else
   {
-    printf("%d is NOT found!", 20);
+    printf("%d is NOT found!", target_number);
   }
 
   return 0;
