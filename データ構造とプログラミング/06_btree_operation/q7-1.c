@@ -115,6 +115,78 @@ NODE_TYPE *insert_node(NODE_TYPE *node, int data)
   return node;
 }
 
+NODE_TYPE *find_max_node(NODE_TYPE *node)
+{
+  if (node->right == NULL)
+  {
+    return node;
+  }
+  return find_max_node(node->right);
+}
+
+NODE_TYPE *find_min_node(NODE_TYPE *node)
+{
+  if (node->left == NULL)
+  {
+    return node;
+  }
+  return find_min_node(node->left);
+}
+
+NODE_TYPE *delete_node(NODE_TYPE *node, int data)
+{
+  NODE_TYPE *tmp;
+  printf("current node.data is %d\n", node->data);
+
+  if (node == NULL)
+  {
+    printf("data %d is not found", data);
+  }
+  else if (data < node->data)
+  {
+    node->left = delete_node(node->left, data);
+  }
+  else if (data > node->data)
+  {
+    node->right = delete_node(node->right, data);
+  }
+  // 削除対象が現在のノードの時は子の数で処理を変える
+  else
+  {
+    // 子が2つの時
+    if (node->right && node->left)
+    {
+      // 左のmaxか右のminを昇格させる
+      tmp = node;
+      node = find_max_node(node->left);
+      node->right = tmp->right;
+      free(tmp);
+    }
+    // 子が right にだけいる時
+    else if (node->right != NULL)
+    {
+      tmp = node->right;
+      node = node->right;
+      free(tmp);
+    }
+    // 子が left にだけいる時
+    else if (node->left != NULL)
+    {
+      tmp = node->left;
+      node = node->left;
+      free(tmp);
+    }
+    // 子がいない時
+    else
+    {
+      tmp = node->left;
+      node = node->left;
+      free(tmp);
+    }
+  }
+  return node;
+}
+
 NODE_TYPE *build_btree()
 {
   int data[] = {40, 30, 70, 10, 60, 90, 20, 15};
@@ -139,17 +211,11 @@ int main()
   print_btree(root, 0);
   printf("\n");
 
-  target_number = 75;
+  target_number = 40;
+  printf("target number is %d\n", target_number);
 
-  found_node = find_tree_node(root, target_number);
-  if (found_node != NULL)
-  {
-    printf("%d is found!", found_node->data);
-  }
-  else
-  {
-    printf("%d is NOT found!", target_number);
-  }
-
+  root = delete_node(root, target_number);
+  print_btree(root, 0);
+  printf("\n");
   return 0;
 }
