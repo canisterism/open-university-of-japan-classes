@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include <time.h>
 struct Node
 {
   int data;
@@ -62,6 +63,7 @@ NODE_TYPE *insert_node(NODE_TYPE *node, int data)
   }
   else
   {
+    printf("comparing %d and %d ...\n", data, node->data);
     // 挿入したいデータが現在のノード値よりも小さい時
     if (data < node->data)
     {
@@ -119,22 +121,49 @@ bool is_equal_tree(NODE_TYPE *a, NODE_TYPE *b)
   }
 }
 
+void shuffle(int array[], int size)
+{
+  srand(time(NULL));
+  int i, tmp, index;
+  // 実装はランダムに2つの数字を交換し続けているだけ
+  for (i = 0; i < size; i++)
+  {
+    index = rand() % size;   // 1. 交換する要素の添字をランダムに得る
+    tmp = array[i];          // 2. iの添字の要素を取っておく
+    array[i] = array[index]; // 3. 1で得た添字の要素をiの場所にコピーする
+    array[index] = tmp;      // 4. iだったデータを1の場所にコピーして交換が完了する
+  }
+}
+
 int main()
 {
-  NODE_TYPE *root_a;
-  NODE_TYPE *root_b;
+  NODE_TYPE *root;
+  int *array;
+  int array_size, i;
 
-  root_a = build_btree();
-  root_b = build_btree();
+  array_size = 10;
+  array = malloc(sizeof(int) * array_size);
 
-  if (is_equal_tree(root_a, root_b))
+  // 0~10000までを配列で作る
+  for (i = 0; i < array_size; i++)
   {
-    printf("is_equal_tree: true");
+    array[i] = i;
   }
-  else
+
+  shuffle(array, array_size);
+
+  root = malloc(sizeof(NODE_TYPE));
+  root->data = 6;
+  for (i = 0; i < array_size; i++)
   {
-    printf("is_equal_tree: false");
+    printf("insert %d \n", array[i]);
+    insert_node(root, array[i]);
   }
+
+  print_btree(root, 0);
+
+  // root_a = build_btree();
+  // root_b = build_btree();
 
   return 0;
 }
