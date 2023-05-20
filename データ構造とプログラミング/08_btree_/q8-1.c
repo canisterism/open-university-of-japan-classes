@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-
+#include <stdbool.h>
 struct Node
 {
   int data;
@@ -103,16 +103,38 @@ void delete_tree(NODE_TYPE *node)
   free(node);
 }
 
+bool is_equal_tree(NODE_TYPE *a, NODE_TYPE *b)
+{
+  if (a == NULL && b == NULL)
+  {
+    return true;
+  }
+  else if (a->data == b->data)
+  {
+    return is_equal_tree(a->left, b->left) && is_equal_tree(a->right, b->right);
+  }
+  else
+  {
+    return false;
+  }
+}
+
 int main()
 {
-  NODE_TYPE *root;
+  NODE_TYPE *root_a;
+  NODE_TYPE *root_b;
 
-  root = build_btree();
-  print_btree(root, 0);
-  printf("\n");
+  root_a = build_btree();
+  root_b = build_btree();
 
-  delete_tree(root);
-  root = NULL;
+  if (is_equal_tree(root_a, root_b))
+  {
+    printf("is_equal_tree: true");
+  }
+  else
+  {
+    printf("is_equal_tree: false");
+  }
 
   return 0;
 }
