@@ -15,8 +15,8 @@ int gcd(int x, int y)
 int main()
 {
   int x, y, divider;
-  x = 100;
-  y = 68;
+  x = 506;
+  y = 231;
   divider = gcd(x, y);
   printf("gcd(%d, %d)->%d\n", x, y, divider);
 }
